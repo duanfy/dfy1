@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.dao.UserBeanMapper" >
+    <resultMap id="BaseResultMap" type="com.jk.entity.UserBean" >
+        <id column="user_id" property="userId" jdbcType="INTEGER" />
+        <result column="user_name" property="userName" jdbcType="VARCHAR" />
+        <result column="user_deptid" property="userDeptid" jdbcType="INTEGER" />
+        <result column="user_entrytime" property="userEntrytime" jdbcType="VARCHAR" />
+        <result column="user_post" property="userPost" jdbcType="VARCHAR" />
+        <result column="user_duty" property="userDuty" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+    user_id, user_name, user_deptid, user_entrytime, user_post, user_duty
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from t_user
+        where user_id = #{userId,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.jk.entity.UserBean" >
+    insert into t_user (user_id, user_name, user_deptid,
+      user_entrytime, user_post, user_duty
+      )
+    values (#{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{userDeptid,jdbcType=INTEGER},
+      #{userEntrytime,jdbcType=VARCHAR}, #{userPost,jdbcType=VARCHAR}, #{userDuty,jdbcType=VARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.jk.entity.UserBean" >
+        insert into t_user
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="userId != null" >
+                user_id,
+            </if>
+            <if test="userName != null" >
+                user_name,
+            </if>
+            <if test="userDeptid != null" >
+                user_deptid,
+            </if>
+            <if test="userEntrytime != null" >
+                user_entrytime,
+            </if>
+            <if test="userPost != null" >
+                user_post,
+            </if>
+            <if test="userDuty != null" >
+                user_duty,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="userId != null" >
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="userName != null" >
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="userDeptid != null" >
+                #{userDeptid,jdbcType=INTEGER},
+            </if>
+            <if test="userEntrytime != null" >
+                #{userEntrytime,jdbcType=VARCHAR},
+            </if>
+            <if test="userPost != null" >
+                #{userPost,jdbcType=VARCHAR},
+            </if>
+            <if test="userDuty != null" >
+                #{userDuty,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.jk.entity.UserBean" >
+        update t_user
+        <set >
+            <if test="userName != null" >
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="userDeptid != null" >
+                user_deptid = #{userDeptid,jdbcType=INTEGER},
+            </if>
+            <if test="userEntrytime != null" >
+                user_entrytime = #{userEntrytime,jdbcType=VARCHAR},
+            </if>
+            <if test="userPost != null" >
+                user_post = #{userPost,jdbcType=VARCHAR},
+            </if>
+            <if test="userDuty != null" >
+                user_duty = #{userDuty,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where user_id = #{userId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.jk.entity.UserBean" >
+    update t_user
+    set user_name = #{userName,jdbcType=VARCHAR},
+      user_deptid = #{userDeptid,jdbcType=INTEGER},
+      user_entrytime = #{userEntrytime,jdbcType=VARCHAR},
+      user_post = #{userPost,jdbcType=VARCHAR},
+      user_duty = #{userDuty,jdbcType=VARCHAR}
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+
+    <select id="count" resultType="java.lang.Long">
+  	    select count(*) from t_user a, t_dept b where a.user_deptid = b.dept_id
+    </select>
+
+    <select id="findPage" resultMap="BaseResultMap">
+        <bind name="key_off" value="(currPage - 1)*pageSize"/>
+        select a.*,b.dept_name deptName from t_user a, t_dept b where a.user_deptid = b.dept_id
+        limit ${key_off},${pageSize}
+    </select>
+
+    <delete id="del">
+        delete from t_user where user_id in
+        (<foreach collection="array" separator="," item="userId">
+        #{userId}
+    </foreach>)
+    </delete>
+
+    <update id="xiu">
+        update t_user
+        <where>
+            user_id=#{userId}
+        </where>
+    </update>
+</mapper>
